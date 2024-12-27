@@ -8,7 +8,7 @@ const fluxData = [
 ];
 
 const fluxDetails = [
-  { numero: 1, etat: "AJOUT", nomDNSSource: "DNS1", adresseIPSource: "10.0.0.1", /* ... */ },
+  { numero: 1, etat: "AJOUT", nomDNSSource: "DNS1", adresseIPSource: "10.xxxx", /* ... */ },
   // ...
 ];
 

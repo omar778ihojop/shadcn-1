@@ -1,9 +1,6 @@
-// app/flux/page.tsx
-
 "use client";
 import React, { useState, useEffect } from "react";
 
-// (Facultatif) Définissez des types pour vos données si vous utilisez TypeScript
 type FluxDataItem = {
   etablissement: string;
   demandeur: string;
@@ -30,26 +27,21 @@ type FluxDetailItem = {
 };
 
 export default function FluxPage() {
-  // État pour le tableau principal
   const [fluxData, setFluxData] = useState<FluxDataItem[]>([]);
-  // État pour le tableau détaillé
   const [fluxDetails, setFluxDetails] = useState<FluxDetailItem[]>([]);
 
-  // Au montage du composant, on récupère les données via un fetch sur /flux (GET)
   useEffect(() => {
     async function fetchData() {
       try {
-        // Appel d'API vers votre route /flux (route handler Next.js)
         const res = await fetch("/flux");
         if (!res.ok) {
           throw new Error(`Erreur de récupération: ${res.status}`);
         }
-        // On s'attend à recevoir { fluxData: [...], fluxDetails: [...] }
         const data = await res.json();
         setFluxData(data.fluxData || []);
         setFluxDetails(data.fluxDetails || []);
       } catch (error) {
-        console.error("Erreur lors du fetch /flux:", error);
+        console.error("Erreur lors du fetch des données :", error);
       }
     }
 
@@ -57,58 +49,65 @@ export default function FluxPage() {
   }, []);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Tableau de Bord des Flux</h1>
+    <div className="p-8">
+      <h1 className="text-2xl mb-6">Tableau de Bord des Flux</h1>
 
-      <div className="table-container" style={{ display: "flex", gap: 20 }}>
+      {/* Conteneur principal pour deux tableaux côte à côte */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
         {/* Tableau principal */}
-        <table className="main-table" border={1}>
-          <thead>
+        <table className="border-collapse border border-gray-300 w-full">
+          <thead className="bg-gray-200">
             <tr>
-              <th>Nom de l'établissement</th>
-              <th>Nom du demandeur</th>
-              <th>Date de la dernière MAJ</th>
-              <th>Objet de la demande</th>
+              <th className="border border-gray-300 px-4 py-2">Nom de l'établissement</th>
+              <th className="border border-gray-300 px-4 py-2">Nom du demandeur</th>
+              <th className="border border-gray-300 px-4 py-2">Date de la dernière MAJ</th>
+              <th className="border border-gray-300 px-4 py-2">Objet de la demande</th>
             </tr>
           </thead>
           <tbody>
             {fluxData.map((item, idx) => (
-              <tr key={idx}>
-                <td>{item.etablissement}</td>
-                <td>{item.demandeur}</td>
-                <td>{item.dateMaj}</td>
-                <td>{item.objet}</td>
+              <tr key={idx} className="even:bg-gray-100">
+                <td className="border border-gray-300 px-4 py-2">{item.etablissement}</td>
+                <td className="border border-gray-300 px-4 py-2">{item.demandeur}</td>
+                <td className="border border-gray-300 px-4 py-2">{item.dateMaj}</td>
+                <td className="border border-gray-300 px-4 py-2">{item.objet}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Tableau additionnel (Valideur / Approbation / Commentaires) */}
-        <table className="side-table" border={1}>
+        {/* Tableau additionnel */}
+        <table className="border-collapse border border-gray-300 w-full">
           <tbody>
             <tr>
-              <th>Nom du valideur</th>
-              <td>
-                <input type="text" name="valideur" placeholder="Nom du valideur" />
+              <th className="border border-gray-300 px-4 py-2">Nom du valideur</th>
+              <td className="border border-gray-300 px-4 py-2">
+                <input
+                  type="text"
+                  name="valideur"
+                  placeholder="Nom du valideur"
+                  className="border p-2 w-full"
+                />
               </td>
             </tr>
             <tr>
-              <th>Approbation</th>
-              <td>
-                <select name="approbation">
-                  <option value="">NON/OUI</option>
+              <th className="border border-gray-300 px-4 py-2">Approbation</th>
+              <td className="border border-gray-300 px-4 py-2">
+                <select name="approbation" className="border p-2 w-full">
+                  <option value="NON/OUI">NON/OUI</option>
                   <option value="OUI">OUI</option>
                   <option value="NON">NON</option>
                 </select>
               </td>
             </tr>
             <tr>
-              <th>Commentaires</th>
-              <td>
+              <th className="border border-gray-300 px-4 py-2">Commentaires</th>
+              <td className="border border-gray-300 px-4 py-2">
                 <textarea
                   name="commentaires"
                   rows={3}
                   placeholder="Ajouter des commentaires"
+                  className="border p-2 w-full"
                 />
               </td>
             </tr>
@@ -116,47 +115,64 @@ export default function FluxPage() {
         </table>
       </div>
 
-      <hr />
-
-      {/* Tableau détaillé en dessous */}
-      <table className="detailed-table" border={1}>
-        <thead>
+      {/* Tableau détaillé */}
+      <table className="border-collapse border border-gray-300 w-full">
+        <thead className="bg-gray-200">
           <tr>
-            <th rowSpan={2}>N° Flux</th>
-            <th colSpan={5}>Source</th>
-            <th colSpan={4}>Destination</th>
-            <th colSpan={3}>Service</th>
-            <th colSpan={2}>Détails</th>
+            <th rowSpan={2} className="border border-gray-300 px-4 py-2">N° Flux</th>
+            <th colSpan={5} className="border border-gray-300 px-4 py-2">Source</th>
+            <th colSpan={4} className="border border-gray-300 px-4 py-2">Destination</th>
+            <th colSpan={3} className="border border-gray-300 px-4 py-2">Service</th>
+            <th colSpan={2} className="border border-gray-300 px-4 py-2">Détails</th>
           </tr>
-          {/* Complétez ici votre en-tête si besoin */}
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 px-4 py-2">État</th>
+            <th className="border border-gray-300 px-4 py-2">Nom DNS</th>
+            <th className="border border-gray-300 px-4 py-2">Adresse IP</th>
+            <th className="border border-gray-300 px-4 py-2">Mask</th>
+            <th className="border border-gray-300 px-4 py-2">Adresse IP NAT</th>
+            <th className="border border-gray-300 px-4 py-2">Nom DNS</th>
+            <th className="border border-gray-300 px-4 py-2">Adresse IP</th>
+            <th className="border border-gray-300 px-4 py-2">Mask</th>
+            <th className="border border-gray-300 px-4 py-2">Adresse IP NA</th>
+            <th className="border border-gray-300 px-4 py-2">Protocole</th>
+            <th className="border border-gray-300 px-4 py-2">Nom</th>
+            <th className="border border-gray-300 px-4 py-2">N° Port</th>
+            <th className="border border-gray-300 px-4 py-2">Description</th>
+            <th className="border border-gray-300 px-4 py-2">Date d’implémentation</th>
+          </tr>
         </thead>
         <tbody>
           {fluxDetails.map((detail, idx) => (
-            <tr key={idx}>
-              <td>{detail.numero}</td>
-              <td>{detail.etat}</td>
-              <td>{detail.nomDNSSource}</td>
-              <td>{detail.adresseIPSource}</td>
-              <td>{detail.maskSource}</td>
-              <td>{detail.adresseIPNASource}</td>
-              <td>{detail.nomDNSDestination}</td>
-              <td>{detail.adresseIPDestination}</td>
-              <td>{detail.maskDestination}</td>
-              <td>{detail.adresseIPNADestination}</td>
-              <td>{detail.protocole}</td>
-              <td>{detail.nomService}</td>
-              <td>{detail.portService}</td>
-              <td>{detail.description}</td>
-              <td>{detail.dateImplementation}</td>
+            <tr key={idx} className="even:bg-gray-100">
+              <td className="border border-gray-300 px-4 py-2">{detail.numero}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.etat}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.nomDNSSource}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPSource}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.maskSource}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPNASource}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.nomDNSDestination}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPDestination}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.maskDestination}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPNADestination}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.protocole}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.nomService}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.portService}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.description}</td>
+              <td className="border border-gray-300 px-4 py-2">{detail.dateImplementation}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       {/* Formulaire pour ajouter une nouvelle ligne */}
-      <form action="/flux/add-flux-detail" method="POST">
-        {/* Ajoutez ici les champs nécessaires */}
-        <button type="submit">Ajouter une ligne</button>
+      <form action="/flux/add-flux-detail" method="POST" className="mt-4">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Ajouter une ligne
+        </button>
       </form>
     </div>
   );
