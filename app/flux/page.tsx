@@ -125,22 +125,137 @@ export default function FluxPage() {
             <th colSpan={3} className="border border-gray-300 px-4 py-2">Service</th>
             <th colSpan={2} className="border border-gray-300 px-4 py-2">Détails</th>
           </tr>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">État</th>
-            <th className="border border-gray-300 px-4 py-2">Nom DNS</th>
-            <th className="border border-gray-300 px-4 py-2">Adresse IP</th>
-            <th className="border border-gray-300 px-4 py-2">Mask</th>
-            <th className="border border-gray-300 px-4 py-2">Adresse IP NAT</th>
-            <th className="border border-gray-300 px-4 py-2">Nom DNS</th>
-            <th className="border border-gray-300 px-4 py-2">Adresse IP</th>
-            <th className="border border-gray-300 px-4 py-2">Mask</th>
-            <th className="border border-gray-300 px-4 py-2">Adresse IP NA</th>
-            <th className="border border-gray-300 px-4 py-2">Protocole</th>
-            <th className="border border-gray-300 px-4 py-2">Nom</th>
-            <th className="border border-gray-300 px-4 py-2">N° Port</th>
-            <th className="border border-gray-300 px-4 py-2">Description</th>
-            <th className="border border-gray-300 px-4 py-2">Date d’implémentation</th>
-          </tr>
+          <tr>
+                {/* <!-- Sous-colonnes pour Source avec listes déroulantes --> */}
+                <th>
+                    État
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="AJOUT">AJOUT</option>
+                        <option value="Derouler liste">Dérouler liste</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Nom DNS
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="GRP-OCE_VPNSSL-MFA-Users (10.110.30.0/24)GRP-OCE_VPNSSL-MFA-IT (10.110.250.0/24)GRP-OCE_VPNSSL-CABINET (10.110.32.0/24)GRP-OCE_VPNSSL-MFA-Cabinets (10.110.32.0/24)">GRP-OCE_VPNSSL-MFA-Users (10.110.30.0/24)GRP-OCE_VPNSSL-MFA-IT (10.110.250.0/24)GRP-OCE_VPNSSL-CABINET (10.110.32.0/24)GRP-OCE_VPNSSL-MFA-Cabinets (10.110.32.0/24)</option>
+                        <option value="ST YVES Oncologie (À vérifier si naté)">ST YVES Oncologie (À vérifier si naté)</option>
+                        <option value="VLAN Bloc">VLAN Bloc</option>
+                        <option value="VLAN Clinique">VLAN Clinique</option>
+                        <option value="VLAN Soins">VLAN Soins</option>
+                        <option value="WLAN Administratif">WLAN Administratif</option>
+                        <option value="WLAN clinique">WLAN clinique</option>
+                        <option value="WLAN Old Lan">WLAN Old Lan</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Adresse IP
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="10.145.28.0">10.145.28.0</option>
+                        <option value="10.145.29.0">10.145.29.0</option>
+                        <option value="10.145.30.0">10.145.30.0</option>
+                        <option value="10.145.80.0">10.145.80.0</option>
+                        <option value="10.145.83.0">10.145.83.0</option>
+                        <option value="192.168.10">192.168.10</option>
+                        <option value="192.168.56.0">192.168.56.0</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Mask
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Adresse IP NAT
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                {/* <!-- Sous-colonnes pour Destination --> */}
+                <th>
+                    Nom DNS
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="AZU-AP-V189">AZU-AP-V189</option>
+                        <option value="portail.elsan.care">portail.elsan.care</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Adresse IP
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="10.242.23.15">10.242.23.15</option>
+                        <option value="10.242.42.70">10.242.42.70</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Mask
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Adresse IP NA
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                {/* <!-- Sous-colonnes pour Service --> */}
+                <th>
+                    Protocole
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="TCP">TCP</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Nom
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="HTTPS">HTTPS</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    N° Port
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="443">443</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                {/* <!-- Sous-colonnes pour Détails --> */}
+                <th>
+                    Description
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+                <th>
+                    Date d’implémentation
+                    <select>
+                        <option value="">(Sélectionner tout)</option>
+                        <option value="21/10/2024">21/10/2024</option>
+                        <option value="Vides">(Vides)</option>
+                    </select>
+                </th>
+            </tr>
         </thead>
         <tbody>
           {fluxDetails.map((detail, idx) => (
