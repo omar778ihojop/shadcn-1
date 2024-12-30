@@ -1,125 +1,97 @@
 import { NextRequest, NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
 
-// Simule une base de données en mémoire
-const fluxData: Array<{ etablissement: string; demandeur: string; dateMaj: string; version?: string; objet: string }> = [
-  { etablissement: "Hopital X", demandeur: "Dr. Y", dateMaj: "10/10/2024", objet: "Demande A" },
-];
+// Fonction de validation
+function validateFluxDetail(body: any) {
+  if (!body.etat) return "Le champ 'etat' est requis.";
+  if (!body.nomDNSSource) return "Le champ 'nomDNSSource' est requis.";
+  if (!body.adresseIPSource) return "Le champ 'adresseIPSource' est requis.";
+  if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(body.adresseIPSource)) {
+    return "Le champ 'adresseIPSource' doit être une adresse IP valide.";
+  }
+  if (body.maskSource && isNaN(Number(body.maskSource))) {
+    return "Le champ 'maskSource' doit être un nombre.";
+  }
+  // Ajoutez d'autres validations si nécessaire
 
-const fluxDetails: Array<{
-  numero: number;
-  etat: string;
-  nomDNSSource: string;
-  adresseIPSource: string;
-  maskSource?: string;
-  adresseIPNASource?: string;
-  nomDNSDestination?: string;
-  adresseIPDestination?: string;
-  maskDestination?: string;
-  adresseIPNADestination?: string;
-  protocole?: string;
-  nomService?: string;
-  portService?: string;
-  description?: string;
-  dateImplementation?: string;
-}> = [
-  { numero: 1, etat: "AJOUT", nomDNSSource: "DNS1", adresseIPSource: "10.xxxx" },
-];
-
-// Gestion des requêtes GET
-export async function GET(request: NextRequest) {
-  return NextResponse.json({ fluxData, fluxDetails });
+  return null; // Aucun problème
 }
 
-// Gestion des requêtes POST pour ajouter des flux
+export async function GET() {
+  try {
+    const client = await clientPromise; // Connexion à MongoDB
+    const db = client.db(process.env.MONGODB_DB); // Récupération de la base de données
+    const fluxDetails = await db.collection("fluxDetails").find({}).toArray(); // Récupération des documents
+
+    return NextResponse.json({ success: true, fluxDetails });
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données :", error);
+    return NextResponse.json({ success: false, message: "Erreur interne." }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
-  const { pathname } = new URL(request.url);
-  const body = await request.json();
+  try {
+    const body = await request.json();
+    console.log("Body reçu :", body);
 
-  if (pathname.includes("add-flux")) {
-    const flux = body.flux;
-    if (Array.isArray(flux)) {
-      flux.forEach((fluxItem) => {
-        fluxData.push({
-          etablissement: fluxItem.etablissement,
-          demandeur: fluxItem.demandeur,
-          dateMaj: fluxItem.dateMaj,
-          version: fluxItem.version,
-          objet: fluxItem.objet,
-        });
-      });
-    } else {
-      const { etablissement, demandeur, dateMaj, version, objet } = body;
-      fluxData.push({ etablissement, demandeur, dateMaj, version, objet });
+    // Validation des données
+    const validationError = validateFluxDetail(body);
+    if (validationError) {
+      return NextResponse.json(
+        { success: false, message: validationError },
+        { status: 400 }
+      );
     }
-    return NextResponse.json({ success: true, message: "Flux ajouté avec succès." });
-  }
 
-  if (pathname.includes("add-new-row")) {
-    const newRows = body;
-    if (Array.isArray(newRows)) {
-      newRows.forEach((row) => {
-        fluxDetails.push({
-          numero: fluxDetails.length + 1,
-          etat: row.etat || "",
-          nomDNSSource: row.nomDNSSource || "",
-          adresseIPSource: row.adresseIPSource || "",
-          maskSource: row.maskSource || "",
-          adresseIPNASource: row.adresseIPNASource || "",
-          nomDNSDestination: row.nomDNSDestination || "",
-          adresseIPDestination: row.adresseIPDestination || "",
-          maskDestination: row.maskDestination || "",
-          adresseIPNADestination: row.adresseIPNADestination || "",
-          protocole: row.protocole || "",
-          nomService: row.nomService || "",
-          portService: row.portService || "",
-          description: row.description || "",
-          dateImplementation: row.dateImplementation || "",
-        });
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB);
+    const collection = db.collection("fluxDetails");
+
+    if (body.action === "add-flux-detail") {
+      console.log("Ajout d'un détail de flux :", body);
+
+      // Générez un numéro unique si nécessaire
+      const numero = body.numero || (await collection.countDocuments()) + 1;
+
+      const fluxDetail = {
+        numero: numero,
+        etat: body.etat,
+        nomDNSSource: body.nomDNSSource,
+        adresseIPSource: body.adresseIPSource,
+        maskSource: body.maskSource,
+        adresseIPNASource: body.adresseIPNASource,
+        nomDNSDestination: body.nomDNSDestination,
+        adresseIPDestination: body.adresseIPDestination,
+        maskDestination: body.maskDestination,
+        adresseIPNADestination: body.adresseIPNADestination,
+        protocole: body.protocole,
+        nomService: body.nomService,
+        portService: body.portService,
+        description: body.description,
+        dateImplementation: body.dateImplementation,
+      };
+
+      // Insérer dans MongoDB
+      const result = await collection.insertOne(fluxDetail);
+      return NextResponse.json({
+        success: true,
+        message: "Détail ajouté avec succès.",
+        insertedId: result.insertedId,
       });
-      return NextResponse.json({ success: true, message: "Lignes ajoutées avec succès." });
-    } else {
-      return NextResponse.json({ success: false, message: "Données invalides." }, { status: 400 });
     }
+
+    return NextResponse.json(
+      { success: false, message: "Action non reconnue." },
+      { status: 400 }
+    );
+  } catch (error) {
+    console.error("Erreur lors du traitement de la requête :", error);
+    return NextResponse.json(
+      { success: false, message: "Erreur interne." },
+      { status: 500 }
+    );
   }
-
-  if (pathname.includes("add-flux-detail")) {
-    const {
-      etat,
-      nomDNSSource,
-      adresseIPSource,
-      maskSource,
-      adresseIPNASource,
-      nomDNSDestination,
-      adresseIPDestination,
-      maskDestination,
-      adresseIPNADestination,
-      protocole,
-      nomService,
-      portService,
-      description,
-      dateImplementation,
-    } = body;
-
-    fluxDetails.push({
-      numero: fluxDetails.length + 1,
-      etat,
-      nomDNSSource,
-      adresseIPSource,
-      maskSource,
-      adresseIPNASource,
-      nomDNSDestination,
-      adresseIPDestination,
-      maskDestination,
-      adresseIPNADestination,
-      protocole,
-      nomService,
-      portService,
-      description,
-      dateImplementation,
-    });
-
-    return NextResponse.json({ success: true, message: "Détail ajouté avec succès." });
-  }
-
-  return NextResponse.json({ success: false, message: "Route non trouvée." }, { status: 404 });
 }
+
+

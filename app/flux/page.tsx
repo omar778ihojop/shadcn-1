@@ -33,13 +33,13 @@ export default function FluxPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/flux");
+        const res = await fetch("/flux/data");
         if (!res.ok) {
           throw new Error(`Erreur de récupération: ${res.status}`);
         }
+    
         const data = await res.json();
-        setFluxData(data.fluxData || []);
-        setFluxDetails(data.fluxDetails || []);
+        setFluxDetails(data.fluxDetails || []); // Charger les données dans le tableau
       } catch (error) {
         console.error("Erreur lors du fetch des données :", error);
       }
@@ -47,6 +47,59 @@ export default function FluxPage() {
 
     fetchData();
   }, []);
+
+   // Gérer la soumission du formulaire
+   async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    // Caster e.target comme formulaire HTML
+    const form = e.target as HTMLFormElement;
+
+    // Récupérer les données du formulaire
+    const formData = new FormData(form);
+    const newData: Partial<FluxDetailItem> = Object.fromEntries(formData) as Partial<FluxDetailItem>;
+
+    // Validation des champs obligatoires
+    if (!newData.etat || !newData.nomDNSSource || !newData.adresseIPSource) {
+      alert("Veuillez remplir tous les champs obligatoires.");
+      return;
+    }
+
+    console.log("Payload envoyé :", JSON.stringify(newData, null, 2));
+
+try {
+  const res = await fetch("/flux/data", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        ...newData,
+        action: "add-flux-detail", // Ajouter un champ action
+      }),
+    });
+
+  const result = await res.json();
+  console.log("Statut de la réponse :", res.status);
+  console.log("Réponse du serveur :", result);
+
+  if (!res.ok || !result.success) {
+    throw new Error(result.message || "Erreur lors de l'ajout de la ligne.");
+  }
+
+  // Ajouter la ligne localement si la requête est réussie
+  setFluxDetails((prevDetails) => [
+    ...prevDetails,
+    { ...newData, numero: prevDetails.length + 1 } as FluxDetailItem,
+  ]);
+
+  alert("Ligne ajoutée avec succès !");
+  form.reset();
+} catch (error) {
+  console.error("Erreur lors de l'envoi des données :", error);
+  alert("Une erreur s'est produite lors de l'ajout de la ligne.");
+}
+}
 
   return (
     <div className="p-8">
@@ -58,7 +111,7 @@ export default function FluxPage() {
         <table className="border-collapse border border-gray-300 w-full">
           <thead className="bg-gray-200">
             <tr>
-              <th className="border border-gray-300 px-4 py-2">Nom de l'établissement</th>
+              <th className="border border-gray-300 px-4 py-2">Nom de l&apos;établissement</th>
               <th className="border border-gray-300 px-4 py-2">Nom du demandeur</th>
               <th className="border border-gray-300 px-4 py-2">Date de la dernière MAJ</th>
               <th className="border border-gray-300 px-4 py-2">Objet de la demande</th>
@@ -132,6 +185,8 @@ export default function FluxPage() {
                     <select>
                         <option value="">(Sélectionner tout)</option>
                         <option value="AJOUT">AJOUT</option>
+                        <option value="SUPPRESSION">SUPPRESSION</option>
+                        <option value="MODIFICATION">MODIFICATION</option>
                         <option value="Derouler liste">Dérouler liste</option>
                         <option value="Vides">(Vides)</option>
                     </select>
@@ -220,6 +275,12 @@ export default function FluxPage() {
                     <select>
                         <option value="">(Sélectionner tout)</option>
                         <option value="TCP">TCP</option>
+                        <option value="UDP">UDP</option>
+                        <option value="ICMP">ICMP</option>
+                        <option value="TCP/UDP">TCP/UDP</option>
+                        <option value="TCP/ICMP">TCP/ICMP</option>
+                        <option value="UDP/ICMP">UDP/ICMP</option>
+                        <option value="TCP/UDP/ICMP">TCP/UDP/ICMP</option>
                         <option value="Vides">(Vides)</option>
                     </select>
                 </th>
@@ -236,6 +297,8 @@ export default function FluxPage() {
                     <select>
                         <option value="">(Sélectionner tout)</option>
                         <option value="443">443</option>
+                        <option value="80">80</option>
+
                         <option value="Vides">(Vides)</option>
                     </select>
                 </th>
@@ -281,14 +344,36 @@ export default function FluxPage() {
       </table>
 
       {/* Formulaire pour ajouter une nouvelle ligne */}
-      <form action="/flux/add-flux-detail" method="POST" className="mt-4">
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
+      <form onSubmit={handleFormSubmit}>
+        <table className="add-row-table">
+          <tbody>
+            <tr>
+              <td><input type="text" name="etat" placeholder="Etat" className="border p-2 w-full" /></td>
+              <td><input type="text" name="nomDNSSource" placeholder="Nom DNS Source" className="border p-2 w-full" /></td>
+              <td><input type="text" name="adresseIPSource" placeholder="Adresse IP Source" className="border p-2 w-full" /></td>
+              <td><input type="text" name="maskSource" placeholder="Mask Source" className="border p-2 w-full" /></td>
+              <td><input type="text" name="adresseIPNASource" placeholder="Adresse IP NAT Source" className="border p-2 w-full" /></td>
+              <td><input type="text" name="nomDNSDestination" placeholder="Nom DNS Destination" className="border p-2 w-full" /></td>
+              <td><input type="text" name="adresseIPDestination" placeholder="Adresse IP Destination" className="border p-2 w-full" /></td>
+              <td><input type="text" name="maskDestination" placeholder="Mask Destination" className="border p-2 w-full" /></td>
+              <td><input type="text" name="adresseIPNADestination" placeholder="Adresse IP NAT Destination" className="border p-2 w-full" /></td>
+              <td><input type="text" name="protocole" placeholder="Protocole" className="border p-2 w-full" /></td>
+              <td><input type="text" name="nomService" placeholder="Nom Service" className="border p-2 w-full" /></td>
+              <td><input type="text" name="portService" placeholder="N° Port" className="border p-2 w-full" /></td>
+              <td><input type="text" name="description" placeholder="Description" className="border p-2 w-full" /></td>
+              <td><input type="date" name="dateImplementation" className="border p-2 w-full" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">
           Ajouter une ligne
         </button>
       </form>
     </div>
   );
 }
+
+
+
+
+
