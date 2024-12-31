@@ -105,7 +105,19 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
 export default function FluxPage() {
   const [fluxData, setFluxData] = useState<FluxDataItem[]>([]);
   const [fluxDetails, setFluxDetails] = useState<FluxDetailItem[]>([]);
+  const handleCellChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    rowIndex: number,
+    key: keyof FluxDataItem
+  ) => {
+    const newValue = e.target.value;
   
+    setFluxData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[rowIndex][key] = newValue;
+      return updatedData;
+    });
+  };
   useEffect(() => {
     async function fetchData() {
       try {
@@ -188,7 +200,15 @@ try {
         <table className="border-collapse border border-gray-300 w-full">
           <thead className="bg-gray-200">
             <tr>
-              <th className="border border-gray-300 px-4 py-2">Nom de l&apos;établissement</th>
+            <th className="border border-gray-300 px-4 py-2">
+        Nom de l’établissement
+        <select className="ml-2 border p-1 rounded">
+          <option value="">(Sélectionner tout)</option>
+          <option value="Etablissement A">Etablissement A</option>
+          <option value="Etablissement B">Etablissement B</option>
+          <option value="Etablissement C">Etablissement C</option>
+        </select>
+      </th>
               <th className="border border-gray-300 px-4 py-2">Nom du demandeur</th>
               <th className="border border-gray-300 px-4 py-2">Date de la dernière MAJ</th>
               <th className="border border-gray-300 px-4 py-2">Objet de la demande</th>
@@ -198,14 +218,34 @@ try {
   {fluxData.map((item: FluxDataItem, idx: number) => (
     <tr key={idx} className="even:bg-gray-100">
       <td className="border border-gray-300 px-4 py-2">{item.etablissement}</td>
-      <td className="border border-gray-300 px-4 py-2">{item.demandeur}</td>
-      <td className="border border-gray-300 px-4 py-2">{item.dateMaj}</td>
-      <td className="border border-gray-300 px-4 py-2">{item.objet}</td>
-    </tr>
-  ))}
-</tbody>
-
-        </table>
+      <td className="border border-gray-300 px-4 py-2">
+          <input
+            type="text"
+            className="border p-1 w-full"
+            defaultValue={item.demandeur}
+            onChange={(e) => handleCellChange(e, idx, "demandeur")}
+          />
+        </td>
+        <td className="border border-gray-300 px-4 py-2">
+          <input
+            type="text"
+            className="border p-1 w-full"
+            defaultValue={item.dateMaj}
+            onChange={(e) => handleCellChange(e, idx, "dateMaj")}
+          />
+        </td>
+        <td className="border border-gray-300 px-4 py-2">
+          <input
+            type="text"
+            className="border p-1 w-full"
+            defaultValue={item.objet}
+            onChange={(e) => handleCellChange(e, idx, "objet")}
+          />
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
         {/* Tableau additionnel */}
         <table className="border-collapse border border-gray-300 w-full">
