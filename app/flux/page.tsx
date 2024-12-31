@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { DataTable } from "@/components/ui/data-table"; // Ajustez le chemin si nécessaire
+import { ColumnDef } from "@tanstack/react-table";
 
 type FluxDataItem = {
   etablissement: string;
@@ -26,10 +28,84 @@ type FluxDetailItem = {
   dateImplementation: string;
 };
 
+
+const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
+  {
+    accessorKey: "numero",
+    header: "N° Flux",
+  },
+  {
+    accessorKey: "etat",
+    header: () => (
+      <>
+        État
+        <select className="ml-2 border p-1 rounded">
+          <option value="">(Sélectionner tout)</option>
+          <option value="AJOUT">AJOUT</option>
+          <option value="SUPPRESSION">SUPPRESSION</option>
+          <option value="MODIFICATION">MODIFICATION</option>
+          <option value="VIDES">(Vides)</option>
+        </select>
+      </>
+    ),
+  },
+  {
+    accessorKey: "nomDNSSource",
+    header: () => (
+      <>
+        Nom DNS Source
+        <select className="ml-2 border p-1 rounded">
+          <option value="">(Sélectionner tout)</option>
+          <option value="GRP-OCE_VPNSSL-MFA-Users">GRP-OCE_VPNSSL-MFA-Users</option>
+          <option value="ST YVES Oncologie">ST YVES Oncologie</option>
+          <option value="VLAN Bloc">VLAN Bloc</option>
+          <option value="VLAN Clinique">VLAN Clinique</option>
+          <option value="VIDES">(Vides)</option>
+        </select>
+      </>
+    ),
+  },
+  {
+    accessorKey: "adresseIPSource",
+    header: () => (
+      <>
+        Adresse IP Source
+        <select className="ml-2 border p-1 rounded">
+          <option value="">(Sélectionner tout)</option>
+          <option value="10.145.28.0">10.145.28.0</option>
+          <option value="10.145.29.0">10.145.29.0</option>
+          <option value="10.145.30.0">10.145.30.0</option>
+          <option value="VIDES">(Vides)</option>
+        </select>
+      </>
+    ),
+  },
+  {
+    accessorKey: "protocole",
+    header: () => (
+      <>
+        Protocole
+        <select className="ml-2 border p-1 rounded">
+          <option value="">(Sélectionner tout)</option>
+          <option value="TCP">TCP</option>
+          <option value="UDP">UDP</option>
+          <option value="ICMP">ICMP</option>
+          <option value="VIDES">(Vides)</option>
+        </select>
+      </>
+    ),
+  },
+  { accessorKey: "nomService", header: "Nom Service" },
+  { accessorKey: "portService", header: "N° Port" },
+  { accessorKey: "description", header: "Description" },
+  { accessorKey: "dateImplementation", header: "Date d'implémentation" },
+];
+
+
 export default function FluxPage() {
   const [fluxData, setFluxData] = useState<FluxDataItem[]>([]);
   const [fluxDetails, setFluxDetails] = useState<FluxDetailItem[]>([]);
-
+  
   useEffect(() => {
     async function fetchData() {
       try {
@@ -37,9 +113,10 @@ export default function FluxPage() {
         if (!res.ok) {
           throw new Error(`Erreur de récupération: ${res.status}`);
         }
-    
+
         const data = await res.json();
-        setFluxDetails(data.fluxDetails || []); // Charger les données dans le tableau
+        setFluxDetails(data.fluxDetails || []);
+        setFluxData(data.fluxData || []);
       } catch (error) {
         console.error("Erreur lors du fetch des données :", error);
       }
@@ -48,8 +125,8 @@ export default function FluxPage() {
     fetchData();
   }, []);
 
-   // Gérer la soumission du formulaire
-   async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+  // Gérer la soumission du formulaire
+  async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     // Caster e.target comme formulaire HTML
@@ -106,7 +183,7 @@ try {
       <h1 className="text-2xl mb-6">Tableau de Bord des Flux</h1>
 
       {/* Conteneur principal pour deux tableaux côte à côte */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-8">
         {/* Tableau principal */}
         <table className="border-collapse border border-gray-300 w-full">
           <thead className="bg-gray-200">
@@ -118,15 +195,16 @@ try {
             </tr>
           </thead>
           <tbody>
-            {fluxData.map((item, idx) => (
-              <tr key={idx} className="even:bg-gray-100">
-                <td className="border border-gray-300 px-4 py-2">{item.etablissement}</td>
-                <td className="border border-gray-300 px-4 py-2">{item.demandeur}</td>
-                <td className="border border-gray-300 px-4 py-2">{item.dateMaj}</td>
-                <td className="border border-gray-300 px-4 py-2">{item.objet}</td>
-              </tr>
-            ))}
-          </tbody>
+  {fluxData.map((item: FluxDataItem, idx: number) => (
+    <tr key={idx} className="even:bg-gray-100">
+      <td className="border border-gray-300 px-4 py-2">{item.etablissement}</td>
+      <td className="border border-gray-300 px-4 py-2">{item.demandeur}</td>
+      <td className="border border-gray-300 px-4 py-2">{item.dateMaj}</td>
+      <td className="border border-gray-300 px-4 py-2">{item.objet}</td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
 
         {/* Tableau additionnel */}
@@ -168,180 +246,10 @@ try {
         </table>
       </div>
 
-      {/* Tableau détaillé */}
-      <table className="border-collapse border border-gray-300 w-full">
-        <thead className="bg-gray-200">
-          <tr>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">N° Flux</th>
-            <th colSpan={5} className="border border-gray-300 px-4 py-2">Source</th>
-            <th colSpan={4} className="border border-gray-300 px-4 py-2">Destination</th>
-            <th colSpan={3} className="border border-gray-300 px-4 py-2">Service</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">Détails</th>
-          </tr>
-          <tr>
-                {/* <!-- Sous-colonnes pour Source avec listes déroulantes --> */}
-                <th>
-                    État
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="AJOUT">AJOUT</option>
-                        <option value="SUPPRESSION">SUPPRESSION</option>
-                        <option value="MODIFICATION">MODIFICATION</option>
-                        <option value="Derouler liste">Dérouler liste</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Nom DNS
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="GRP-OCE_VPNSSL-MFA-Users (10.110.30.0/24)GRP-OCE_VPNSSL-MFA-IT (10.110.250.0/24)GRP-OCE_VPNSSL-CABINET (10.110.32.0/24)GRP-OCE_VPNSSL-MFA-Cabinets (10.110.32.0/24)">GRP-OCE_VPNSSL-MFA-Users (10.110.30.0/24)GRP-OCE_VPNSSL-MFA-IT (10.110.250.0/24)GRP-OCE_VPNSSL-CABINET (10.110.32.0/24)GRP-OCE_VPNSSL-MFA-Cabinets (10.110.32.0/24)</option>
-                        <option value="ST YVES Oncologie (À vérifier si naté)">ST YVES Oncologie (À vérifier si naté)</option>
-                        <option value="VLAN Bloc">VLAN Bloc</option>
-                        <option value="VLAN Clinique">VLAN Clinique</option>
-                        <option value="VLAN Soins">VLAN Soins</option>
-                        <option value="WLAN Administratif">WLAN Administratif</option>
-                        <option value="WLAN clinique">WLAN clinique</option>
-                        <option value="WLAN Old Lan">WLAN Old Lan</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Adresse IP
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="10.145.28.0">10.145.28.0</option>
-                        <option value="10.145.29.0">10.145.29.0</option>
-                        <option value="10.145.30.0">10.145.30.0</option>
-                        <option value="10.145.80.0">10.145.80.0</option>
-                        <option value="10.145.83.0">10.145.83.0</option>
-                        <option value="192.168.10">192.168.10</option>
-                        <option value="192.168.56.0">192.168.56.0</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Mask
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="23">23</option>
-                        <option value="24">24</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Adresse IP NAT
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                {/* <!-- Sous-colonnes pour Destination --> */}
-                <th>
-                    Nom DNS
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="AZU-AP-V189">AZU-AP-V189</option>
-                        <option value="portail.elsan.care">portail.elsan.care</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Adresse IP
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="10.242.23.15">10.242.23.15</option>
-                        <option value="10.242.42.70">10.242.42.70</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Mask
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Adresse IP NA
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                {/* <!-- Sous-colonnes pour Service --> */}
-                <th>
-                    Protocole
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="TCP">TCP</option>
-                        <option value="UDP">UDP</option>
-                        <option value="ICMP">ICMP</option>
-                        <option value="TCP/UDP">TCP/UDP</option>
-                        <option value="TCP/ICMP">TCP/ICMP</option>
-                        <option value="UDP/ICMP">UDP/ICMP</option>
-                        <option value="TCP/UDP/ICMP">TCP/UDP/ICMP</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Nom
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="HTTPS">HTTPS</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    N° Port
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="443">443</option>
-                        <option value="80">80</option>
-
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                {/* <!-- Sous-colonnes pour Détails --> */}
-                <th>
-                    Description
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-                <th>
-                    Date d’implémentation
-                    <select>
-                        <option value="">(Sélectionner tout)</option>
-                        <option value="21/10/2024">21/10/2024</option>
-                        <option value="Vides">(Vides)</option>
-                    </select>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-          {fluxDetails.map((detail, idx) => (
-            <tr key={idx} className="even:bg-gray-100">
-              <td className="border border-gray-300 px-4 py-2">{detail.numero}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.etat}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.nomDNSSource}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPSource}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.maskSource}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPNASource}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.nomDNSDestination}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPDestination}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.maskDestination}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.adresseIPNADestination}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.protocole}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.nomService}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.portService}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.description}</td>
-              <td className="border border-gray-300 px-4 py-2">{detail.dateImplementation}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Tableau détaillé avec Data Table */}
+      <div className="mb-8">
+        <DataTable columns={fluxDetailsColumns} data={fluxDetails} />
+      </div>
 
       {/* Formulaire pour ajouter une nouvelle ligne */}
       <form onSubmit={handleFormSubmit}>
