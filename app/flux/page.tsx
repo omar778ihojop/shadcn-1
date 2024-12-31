@@ -204,11 +204,51 @@ try {
         Nom de l’établissement
         <select className="ml-2 border p-1 rounded">
           <option value="">(Sélectionner tout)</option>
-          <option value="Etablissement A">Etablissement A</option>
-          <option value="Etablissement B">Etablissement B</option>
-          <option value="Etablissement C">Etablissement C</option>
-        </select>
-      </th>
+          <option value="Institut International de Radiochirurgie de Paris Hartmann– 2IRPH - Institut de radiothérapie Hartmann">Institut International de Radiochirurgie de Paris Hartmann– 2IRPH - Institut de radiothérapie Hartmann</option>
+          <option value="Cimed">Cimed</option>
+          <option value="Clinique Ambroise Paré (Toulouse)">Clinique Ambroise Paré (Toulouse)</option>
+          <option value="Clinique de l'Archette">Clinique de l'Archette</option>
+          <option value="GCS Clinique Jeanne d'Arc">GCS Clinique Jeanne d'Arc</option>
+          <option value="Clinique médicale et cardiologique d'Aressy">Clinique médicale et cardiologique d'Aressy</option>
+          <option value="Clinique Saint-Augustin (Bordeaux)">Clinique Saint-Augustin (Bordeaux)</option>
+          <option value="Clinique Saint Augustin">Clinique Saint Augustin</option>
+          <option value="CENTRE MEDICO CHIRURGICAL TRONQUIERES">CENTRE MEDICO CHIRURGICAL TRONQUIERES</option>
+          <option value="CMC Tronquières">CMC Tronquières</option>
+          <option value="Clinique Pasteur (Bergerac)">Clinique Pasteur (Bergerac)</option>
+          <option value="GCS BIM - TEP & IRM Beaujon - MN cardio Bichat">GCS BIM - TEP & IRM Beaujon - MN cardio Bichat</option>
+          <option value="Centre de réadaptation Guillaume de Varye (Le Baludy)">Centre de réadaptation Guillaume de Varye (Le Baludy)</option>
+          <option value="Clinique Bonnefon">Clinique Bonnefon</option>
+          <option value="Clinique Bouchard">Clinique Bouchard</option>
+          <option value="Clinique Bretéché">Clinique Bretéché</option>
+          <option value="CENTRE AQUITAIN POUR LE DEVELOPPEMENT DE LA DIALYSE A DOMICILE (CA3D)">CENTRE AQUITAIN POUR LE DEVELOPPEMENT DE LA DIALYSE A DOMICILE (CA3D)</option>
+          <option value="CALIBREST – Centre Finistérien de Radiothérapie et d’Oncologie">CALIBREST – Centre Finistérien de Radiothérapie et d’Oncologie</option>
+          <option value="CALIMETZ - Institut Privé de Radiothérapie de Metz">CALIMETZ - Institut Privé de Radiothérapie de Metz</option>
+          <option value="Imagerie Médicale Conflent Canigou">Imagerie Médicale Conflent Canigou</option>
+          <option value="Clinique Belledonne Alpes (St Martin d'HERES)">Clinique Belledonne Alpes (St Martin d'HERES)</option>
+          <option value="Clinique Claude Bernard (Albi)">Clinique Claude Bernard (Albi)</option>
+          <option value="Clinique Bon Secours (Le Puy En Velay)">Clinique Bon Secours (Le Puy En Velay)</option>
+          <option value="Clinique du Cambrésis">Clinique du Cambrésis</option>
+          <option value="Centre de Dialyse de l'Estrée">Centre de Dialyse de l'Estrée</option>
+          <option value="Clinique Cap d'Or">Clinique Cap d'Or</option>
+          <option value="Centre Médico-Chirurgical Les Cèdres">Centre Médico-Chirurgical Les Cèdres</option>
+          <option value="Clinique du Vallespir">Clinique du Vallespir</option>
+          <option value="Clinique Nouvelle du Forez (Montbrison)">Clinique Nouvelle du Forez (Montbrison)</option>
+          <option value="Hôpital Privé La Chataigneraie">Hôpital Privé La Chataigneraie</option>
+          <option value="Clinique Saint-François">Clinique Saint-François</option>
+          <option value="CIMROR (CENTRE D'IMAGERIE ME)">CIMROR (CENTRE D'IMAGERIE ME)</option>
+          <option value="Clinique du Jura (Lons-Le-Saunier)">Clinique du Jura (Lons-Le-Saunier)</option>
+          <option value="Centre Clinical">Centre Clinical</option>
+          <option value="CALIREIMS – Centre ICONE">CALIREIMS – Centre ICONE</option>
+          <option value="Clinique Calabet">Clinique Calabet</option>
+          <option value="CALIVAL – Centre de cancérologie les Dentellières">CALIVAL – Centre de cancérologie les Dentellières</option>
+          <option value="Clinique Du Parc (Lyon)">Clinique Du Parc (Lyon)</option>
+          <option value="Clinique Saint Martin (Vesoul)">Clinique Saint Martin (Vesoul)</option>
+          <option value="Centre Médico-Chirurgical du Mans">Centre Médico-Chirurgical du Mans</option>
+          <option value="Centre Médical International – Centre de Vaccination International - Paris République">Centre Médical International – Centre de Vaccination International - Paris République</option>
+          <option value="Centre Médical et de Vaccination Lyon – Clinique du Parc">Centre Médical et de Vaccination Lyon – Clinique du Parc</option>
+          <option value="Centre Médical et de Vaccination Marseille Bouchard">Centre Médical et de Vaccination Marseille Bouchard</option>
+  </select>
+</th>
               <th className="border border-gray-300 px-4 py-2">Nom du demandeur</th>
               <th className="border border-gray-300 px-4 py-2">Date de la dernière MAJ</th>
               <th className="border border-gray-300 px-4 py-2">Objet de la demande</th>
