@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { DataTable } from "@/components/ui/data-table"; // Ajustez le chemin si nécessaire
 import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button"; 
 
 type FluxDataItem = {
   etablissement: string;
@@ -105,6 +106,7 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
 export default function FluxPage() {
   const [fluxData, setFluxData] = useState<FluxDataItem[]>([]);
   const [fluxDetails, setFluxDetails] = useState<FluxDetailItem[]>([]);
+  const [username, setUsername] = useState<string | null>(null);
   const handleCellChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     rowIndex: number,
@@ -119,22 +121,34 @@ export default function FluxPage() {
     });
   };
   useEffect(() => {
-    async function fetchData() {
+    async function fetchUser() {
       try {
-        const res = await fetch("/flux/data");
+        const res = await fetch("/api/auth/user");
         if (!res.ok) {
-          throw new Error(`Erreur de récupération: ${res.status}`);
+          throw new Error("Non authentifié");
         }
-
         const data = await res.json();
-        setFluxDetails(data.fluxDetails || []);
-        setFluxData(data.fluxData || []);
+        setUsername(data.username);
+
+        // Ajouter automatiquement une ligne dans le tableau
+        const now = new Date().toLocaleString();
+        setFluxData((prev) => [
+          ...prev,
+          {
+            etablissement: "Institut International de Radiochirurgie de Paris Hartmann– 2IRPH",
+            demandeur: data.username,
+            dateMaj: now,
+            objet: "",
+          },
+        ]);
       } catch (error) {
-        console.error("Erreur lors du fetch des données :", error);
+        console.error("Erreur :", error);
+        // Rediriger vers la page de connexion si non authentifié
+        window.location.href = "/login";
       }
     }
 
-    fetchData();
+    fetchUser();
   }, []);
 
   // Gérer la soumission du formulaire
@@ -200,9 +214,9 @@ try {
         <table className="border-collapse border border-gray-300 w-full">
           <thead className="bg-gray-200">
             <tr>
-            <th className="border border-gray-300 px-4 py-2">
+            <th className="border border-gray-300 px-4 py-2 w-1/4">
         Nom de l’établissement
-        <select className="ml-2 border p-1 rounded">
+        <select className="ml-2 border p-1 rounded w-full">
           <option value="">(Sélectionner tout)</option>
           <option value="Institut International de Radiochirurgie de Paris Hartmann– 2IRPH - Institut de radiothérapie Hartmann">Institut International de Radiochirurgie de Paris Hartmann– 2IRPH - Institut de radiothérapie Hartmann</option>
           <option value="Cimed">Cimed</option>
@@ -353,10 +367,24 @@ try {
             </tr>
           </tbody>
         </table>
-        <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">
-          Ajouter une ligne
-        </button>
-      </form>
+        {/* Conteneur pour les boutons */}
+  <div className="flex justify-between items-center mt-4">
+    {/* Bouton Ajouter une ligne */}
+    <Button variant="default" size="lg" type="submit" className="bg-blue-500">
+      Ajouter une ligne
+    </Button>
+
+    {/* Bouton Envoyer la demande */}
+    <Button
+      variant="default"
+      size="lg"
+      className="bg-green-500 ml-auto"
+      onClick={() => alert("Demande envoyée avec succès !")}
+    >
+      Envoyer la demande
+    </Button>
+  </div>
+</form>
     </div>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button"; // Assurez-vous que le chemin correspond
 import { useForm } from "react-hook-form";
 
 export default function LoginPage() {
+  const router = useRouter();
   const form = useForm({
     defaultValues: {
       username: "",
@@ -13,8 +15,24 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: { username: string; password: string }) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data: { username: string; password: string }) => {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        router.push("/flux"); // Rediriger vers /flux si authentifié
+      } else {
+        alert("Nom d'utilisateur ou mot de passe incorrect.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la connexion :", error);
+    }
   };
 
   return (
