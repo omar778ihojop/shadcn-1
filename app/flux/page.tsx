@@ -67,6 +67,21 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
     ),
   },
   {
+    accessorKey: "dateImplementation",
+    header: "Date d'implémentation",
+    cell: ({ row }) => (
+      <input
+        type="date"
+        className="border p-2 w-full"
+        defaultValue={row.original.dateImplementation || ""}
+        onChange={(e) => {
+          const newValue = e.target.value;
+          row.original.dateImplementation = newValue;
+        }}
+      />
+    ),
+  },
+  {
     accessorKey: "adresseIPSource",
     header: () => (
       <>
