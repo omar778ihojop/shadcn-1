@@ -4,6 +4,28 @@ import { DataTable } from "@/components/ui/data-table"; // Ajustez le chemin si 
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button"; 
 
+const etablissementOptions = [
+  "2IR", "AGE", "AMB", "ARC", "ARL", "ASY", "AUG", "AUG", "AUR", "AUR", "BGC",
+  "BIM", "BLY", "BON", "BOU", "BOU", "BRE", "CAD", "CAL", "CAM", "CAN", "CBD",
+  "CBE", "CBO", "CBS", "CDE", "CDO", "CED", "CER", "CFO", "CHA", "CHX", "CIM",
+  "CJU", "CLI", "CLR", "CLT", "CLV", "CLY", "CMA", "CMC", "CMI", "CML", "CMM",
+  "CMT", "CNT", "COF", "COM", "CPA", "CPB", "CRA", "CRE", "CSA", "CSF", "CSO",
+  "CSP", "CTM", "CVI", "DAP", "DES", "DUN", "ESQ", "EST", "FDG", "FIF", "FIF",
+  "FIR", "FLA", "FLE", "FLE", "FLO", "FON", "FRA", "FVT", "GDV", "GIS", "GLA",
+  "GRA", "HAD", "HAR", "HCC", "HEM", "HPA", "HPL", "HPN", "HSA", "IAD", "IAP",
+  "IAV", "ICG", "ICO", "ICO-1", "ILF", "IMG", "INK", "IOS", "ISO", "ITM", "JVL",
+  "KER", "KEV", "LAN", "LAU", "MAJ", "MAU", "MAU-1", "MAU-2", "MAU-3", "MAU-4",
+  "MDR", "MLC", "MLC", "MON", "Monis", "MOR", "MRE", "MTG", "NAR", "NCD", "NDE",
+  "NDT", "NEM", "NEM-1", "NEM-2", "NEM-3", "NLF", "OCC", "OCE", "ORA", "ORC",
+  "ORE", "ORP", "Orthéo", "PAO", "PAR", "PCA", "PDP", "PER", "PFC", "PGS", "PND",
+  "POD", "POD", "PON", "PPA", "PPI", "PSR", "PVS", "PYR", "RDG", "RHM", "RHO",
+  "RHO", "RIM", "RLS", "ROZ", "SAD", "SAO", "SAP", "SCH", "SEN", "SID", "SJU",
+  "SLF", "SMI", "SOM", "SPI", "SQT", "SRO", "SSA", "STC", "STI", "STL", "STM",
+  "STS", "SUD", "SUP", "TEP", "TER", "THX", "TLN", "TLN", "TPN", "UBN", "VAU",
+  "VDL", "VHU", "YSS",
+];
+
+
 type FluxDataItem = {
   etablissement: string;
   demandeur: string;
@@ -135,10 +157,10 @@ export default function FluxPage() {
         setFluxData((prev) => [
           ...prev,
           {
-            etablissement: "Institut International de Radiochirurgie de Paris Hartmann– 2IRPH",
-            demandeur: data.username,
-            dateMaj: now,
-            objet: "",
+            etablissement: "2IR", // Choisissez une valeur par défaut
+    demandeur: username || "",
+    dateMaj: new Date().toLocaleString(),
+    objet: "",
           },
         ]);
       } catch (error) {
@@ -189,7 +211,27 @@ export default function FluxPage() {
           <tbody>
             {fluxData.map((item, idx) => (
               <tr key={idx} className="even:bg-gray-100">
-                <td className="border border-gray-300 px-4 py-2">{item.etablissement}</td>
+                <td className="border border-gray-300 px-4 py-2">
+  <select
+    value={item.etablissement || ""}
+    onChange={(e) => {
+      const selectedValue = e.target.value;
+      setFluxData((prev) =>
+        prev.map((data, idx) =>
+          idx === idx ? { ...data, etablissement: selectedValue } : data
+        )
+      );
+    }}
+    className="border p-2 w-full"
+  >
+    <option value="">Sélectionner un établissement</option>
+    {etablissementOptions.map((option) => (
+      <option key={option} value={option}>
+        {option}
+      </option>
+    ))}
+  </select>
+</td>
                 <td className="border border-gray-300 px-4 py-2">{item.demandeur}</td>
                 <td className="border border-gray-300 px-4 py-2">{item.dateMaj}</td>
                 <td className="border border-gray-300 px-4 py-2">{item.objet}</td>
