@@ -19,9 +19,9 @@ function validateFluxDetail(body: any) {
 
 export async function GET() {
   try {
-    const client = await clientPromise; // Connexion à MongoDB
-    const db = client.db(process.env.MONGODB_DB); // Récupération de la base de données
-    const fluxDetails = await db.collection("fluxDetails").find({}).toArray(); // Récupération des documents
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB);
+    const fluxDetails = await db.collection("fluxDetails").find({}).toArray();
 
     return NextResponse.json({ success: true, fluxDetails });
   } catch (error) {

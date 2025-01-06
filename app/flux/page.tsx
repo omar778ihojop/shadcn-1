@@ -121,11 +121,7 @@ export default function FluxPage() {
   const [fluxData, setFluxData] = useState<FluxDataItem[]>([]);
   const [fluxDetails, setFluxDetails] = useState<FluxDetailItem[]>([]);
   const [username, setUsername] = useState<string | null>(null);
-  const [showDateColumn, setShowDateColumn] = useState(false); // Contrôle de l'affichage de la colonne
-  
-  // Détermine si l'utilisateur est un validateur
-  const isValidator = username === "validateur-test";
-  
+
   useEffect(() => {
     async function fetchUser() {
       try {

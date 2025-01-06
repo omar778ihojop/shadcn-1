@@ -14,5 +14,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/flux"], // Protéger la route /flux
+  matcher: ["/flux", "/historique"], // Protéger les routes /flux et /historique
 };

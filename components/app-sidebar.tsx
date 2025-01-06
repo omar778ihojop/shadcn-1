@@ -24,7 +24,7 @@ const items = [
   },
   {
     title: "Historique des anciennes demandes",
-    url: "#",
+    url: "/historique",
     icon: Calendar,
   },
   {
