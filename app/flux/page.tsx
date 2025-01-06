@@ -129,13 +129,14 @@ export default function FluxPage() {
         if (!res.ok) throw new Error("Non authentifié");
         const data = await res.json();
         setUsername(data.username);
+
         const now = new Date().toLocaleString();
+
         setFluxData((prev) => [
-          ...prev,
           {
             etablissement: "2IR", // Choisissez une valeur par défaut
             demandeur: username || "",
-            dateMaj: new Date().toLocaleString(),
+            dateMaj: now,
             objet: "",
           },
         ]);
@@ -175,7 +176,7 @@ export default function FluxPage() {
     <div className="p-8">
       {/* Tableau principal */}
       <div className="grid grid-cols-2 gap-4 mb-8">
-        <table className="border-collapse border border-gray-300 w-full">
+      <table className="border-collapse border border-gray-300 w-full text-sm">
           <thead className="bg-gray-200">
             <tr>
               <th className="border border-gray-300 px-4 py-2">Nom de l’établissement</th>
@@ -309,14 +310,9 @@ export default function FluxPage() {
   </td>
 
   {/* Liste déroulante pour Adresse IP Source */}
+
   <td>
-    <select name="adresseIPSource" className="border p-2 w-full">
-      <option value="">(Sélectionner tout)</option>
-      <option value="10.145.28.0">10.145.28.0</option>
-      <option value="10.145.29.0">10.145.29.0</option>
-      <option value="10.145.30.0">10.145.30.0</option>
-      <option value="VIDES">(Vides)</option>
-    </select>
+    <input type="text" name="adresseIPSource" placeholder="Adresse IP Source" className="border p-2 w-full" />
   </td>
 
   {/* Champ texte pour Mask Source */}
