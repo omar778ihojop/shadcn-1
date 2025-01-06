@@ -4,7 +4,8 @@ import { DataTable } from "@/components/ui/data-table"; // Ajustez le chemin si 
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button"; 
 
-const etablissementOptions = [
+const etablissementOptions = Array.from(
+  new Set([
   "2IR", "AGE", "AMB", "ARC", "ARL", "ASY", "AUG", "AUG", "AUR", "AUR", "BGC",
   "BIM", "BLY", "BON", "BOU", "BOU", "BRE", "CAD", "CAL", "CAM", "CAN", "CBD",
   "CBE", "CBO", "CBS", "CDE", "CDO", "CED", "CER", "CFO", "CHA", "CHX", "CIM",
@@ -23,8 +24,8 @@ const etablissementOptions = [
   "SLF", "SMI", "SOM", "SPI", "SQT", "SRO", "SSA", "STC", "STI", "STL", "STM",
   "STS", "SUD", "SUP", "TEP", "TER", "THX", "TLN", "TLN", "TPN", "UBN", "VAU",
   "VDL", "VHU", "YSS",
-];
-
+])
+);
 
 type FluxDataItem = {
   etablissement: string;
@@ -158,9 +159,9 @@ export default function FluxPage() {
           ...prev,
           {
             etablissement: "2IR", // Choisissez une valeur par défaut
-    demandeur: username || "",
-    dateMaj: new Date().toLocaleString(),
-    objet: "",
+            demandeur: username || "",
+            dateMaj: new Date().toLocaleString(),
+            objet: "",
           },
         ]);
       } catch (error) {
@@ -232,9 +233,40 @@ export default function FluxPage() {
     ))}
   </select>
 </td>
-                <td className="border border-gray-300 px-4 py-2">{item.demandeur}</td>
+                {/* Colonne pour Nom du demandeur */}
+      <td className="border border-gray-300 px-4 py-2">
+        <input
+          type="text"
+          value={item.demandeur}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setFluxData((prev) =>
+              prev.map((data, index) =>
+                index === idx ? { ...data, demandeur: newValue } : data
+              )
+            );
+          }}
+          placeholder="Saisissez un nom"
+          className="border p-2 w-full"
+        />
+      </td>
                 <td className="border border-gray-300 px-4 py-2">{item.dateMaj}</td>
-                <td className="border border-gray-300 px-4 py-2">{item.objet}</td>
+                <td className="border border-gray-300 px-4 py-2">
+        <input
+          type="text"
+          value={item.objet}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setFluxData((prev) =>
+              prev.map((data, index) =>
+                index === idx ? { ...data, objet: newValue } : data
+              )
+            );
+          }}
+          placeholder="Saisissez l'objet de la demande"
+          className="border p-2 w-full"
+        />
+      </td>
               </tr>
             ))}
           </tbody>
