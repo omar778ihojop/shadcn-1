@@ -45,7 +45,6 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
           <option value="AJOUT">AJOUT</option>
           <option value="SUPPRESSION">SUPPRESSION</option>
           <option value="MODIFICATION">MODIFICATION</option>
-          <option value="VIDES">(Vides)</option>
         </select>
       </>
     ),
@@ -61,7 +60,6 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
           <option value="ST YVES Oncologie">ST YVES Oncologie</option>
           <option value="VLAN Bloc">VLAN Bloc</option>
           <option value="VLAN Clinique">VLAN Clinique</option>
-          <option value="VIDES">(Vides)</option>
         </select>
       </>
     ),
@@ -76,35 +74,16 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
           <option value="10.145.28.0">10.145.28.0</option>
           <option value="10.145.29.0">10.145.29.0</option>
           <option value="10.145.30.0">10.145.30.0</option>
-          <option value="VIDES">(Vides)</option>
         </select>
       </>
     ),
   },
-  {
-    accessorKey: "maskSource",
-    header: "Mask Source",
-  },
-  {
-    accessorKey: "adresseIPNASource",
-    header: "Adresse IP NAT Source",
-  },
-  {
-    accessorKey: "nomDNSDestination",
-    header: "Nom DNS Destination",
-  },
-  {
-    accessorKey: "adresseIPDestination",
-    header: "Adresse IP Destination",
-  },
-  {
-    accessorKey: "maskDestination",
-    header: "Mask Destination",
-  },
-  {
-    accessorKey: "adresseIPNADestination",
-    header: "Adresse IP NAT Destination",
-  },
+  { accessorKey: "maskSource", header: "Mask Source" },
+  { accessorKey: "adresseIPNASource", header: "Adresse IP NAT Source" },
+  { accessorKey: "nomDNSDestination", header: "Nom DNS Destination" },
+  { accessorKey: "adresseIPDestination", header: "Adresse IP Destination" },
+  { accessorKey: "maskDestination", header: "Mask Destination" },
+  { accessorKey: "adresseIPNADestination", header: "Adresse IP NAT Destination" },
   {
     accessorKey: "protocole",
     header: () => (
@@ -115,23 +94,13 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
           <option value="TCP">TCP</option>
           <option value="UDP">UDP</option>
           <option value="ICMP">ICMP</option>
-          <option value="VIDES">(Vides)</option>
         </select>
       </>
     ),
   },
-  {
-    accessorKey: "nomService",
-    header: "Nom Service",
-  },
-  {
-    accessorKey: "portService",
-    header: "N° Port",
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-  },
+  { accessorKey: "nomService", header: "Nom Service" },
+  { accessorKey: "portService", header: "N° Port" },
+  { accessorKey: "description", header: "Description" },
   {
     accessorKey: "dateImplementation",
     header: "Date d'implémentation",
@@ -139,18 +108,16 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
       <input
         type="text"
         className="border p-2 w-full"
-        value={row.original.dateImplementation || ""} // Définit une valeur vide par défaut
+        value={row.original.dateImplementation || ""}
         onChange={(e) => {
           const newValue = e.target.value;
-          row.original.dateImplementation = newValue; // Met à jour la valeur dans les données
+          row.original.dateImplementation = newValue;
         }}
         placeholder="Saisir une date"
       />
     ),
   },
 ];
-
-
 
 export default function FluxPage() {
   const [fluxData, setFluxData] = useState<FluxDataItem[]>([]);
