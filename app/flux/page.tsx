@@ -63,12 +63,6 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
     header: () => (
       <>
         État
-        <select className="ml-2 border p-1 rounded">
-          <option value="">(Sélectionner tout)</option>
-          <option value="AJOUT">AJOUT</option>
-          <option value="SUPPRESSION">SUPPRESSION</option>
-          <option value="MODIFICATION">MODIFICATION</option>
-        </select>
       </>
     ),
   },
@@ -77,13 +71,6 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
     header: () => (
       <>
         Nom DNS Source
-        <select className="ml-2 border p-1 rounded">
-          <option value="">(Sélectionner tout)</option>
-          <option value="GRP-OCE_VPNSSL-MFA-Users">GRP-OCE_VPNSSL-MFA-Users</option>
-          <option value="ST YVES Oncologie">ST YVES Oncologie</option>
-          <option value="VLAN Bloc">VLAN Bloc</option>
-          <option value="VLAN Clinique">VLAN Clinique</option>
-        </select>
       </>
     ),
   },
@@ -92,12 +79,6 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
     header: () => (
       <>
         Adresse IP Source
-        <select className="ml-2 border p-1 rounded">
-          <option value="">(Sélectionner tout)</option>
-          <option value="10.145.28.0">10.145.28.0</option>
-          <option value="10.145.29.0">10.145.29.0</option>
-          <option value="10.145.30.0">10.145.30.0</option>
-        </select>
       </>
     ),
   },
@@ -112,12 +93,6 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
     header: () => (
       <>
         Protocole
-        <select className="ml-2 border p-1 rounded">
-          <option value="">(Sélectionner tout)</option>
-          <option value="TCP">TCP</option>
-          <option value="UDP">UDP</option>
-          <option value="ICMP">ICMP</option>
-        </select>
       </>
     ),
   },
