@@ -67,21 +67,6 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
     ),
   },
   {
-    accessorKey: "dateImplementation",
-    header: "Date d'implémentation",
-    cell: ({ row }) => (
-      <input
-        type="date"
-        className="border p-2 w-full"
-        defaultValue={row.original.dateImplementation || ""}
-        onChange={(e) => {
-          const newValue = e.target.value;
-          row.original.dateImplementation = newValue;
-        }}
-      />
-    ),
-  },
-  {
     accessorKey: "adresseIPSource",
     header: () => (
       <>
@@ -95,6 +80,30 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
         </select>
       </>
     ),
+  },
+  {
+    accessorKey: "maskSource",
+    header: "Mask Source",
+  },
+  {
+    accessorKey: "adresseIPNASource",
+    header: "Adresse IP NAT Source",
+  },
+  {
+    accessorKey: "nomDNSDestination",
+    header: "Nom DNS Destination",
+  },
+  {
+    accessorKey: "adresseIPDestination",
+    header: "Adresse IP Destination",
+  },
+  {
+    accessorKey: "maskDestination",
+    header: "Mask Destination",
+  },
+  {
+    accessorKey: "adresseIPNADestination",
+    header: "Adresse IP NAT Destination",
   },
   {
     accessorKey: "protocole",
@@ -111,11 +120,36 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
       </>
     ),
   },
-  { accessorKey: "nomService", header: "Nom Service" },
-  { accessorKey: "portService", header: "N° Port" },
-  { accessorKey: "description", header: "Description" },
-  { accessorKey: "dateImplementation", header: "Date d'implémentation" },
+  {
+    accessorKey: "nomService",
+    header: "Nom Service",
+  },
+  {
+    accessorKey: "portService",
+    header: "N° Port",
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+  },
+  {
+    accessorKey: "dateImplementation",
+    header: "Date d'implémentation",
+    cell: ({ row }) => (
+      <input
+        type="text"
+        className="border p-2 w-full"
+        value={row.original.dateImplementation || ""} // Définit une valeur vide par défaut
+        onChange={(e) => {
+          const newValue = e.target.value;
+          row.original.dateImplementation = newValue; // Met à jour la valeur dans les données
+        }}
+        placeholder="Saisir une date"
+      />
+    ),
+  },
 ];
+
 
 
 export default function FluxPage() {
@@ -488,27 +522,114 @@ try {
 
       {/* Formulaire pour ajouter une nouvelle ligne */}
       <form onSubmit={handleFormSubmit}>
-        <table className="add-row-table">
-          <tbody>
-            <tr>
-              <td><input type="text" name="etat" placeholder="Etat" className="border p-2 w-full" /></td>
-              <td><input type="text" name="nomDNSSource" placeholder="Nom DNS Source" className="border p-2 w-full" /></td>
-              <td><input type="text" name="adresseIPSource" placeholder="Adresse IP Source" className="border p-2 w-full" /></td>
-              <td><input type="text" name="maskSource" placeholder="Mask Source" className="border p-2 w-full" /></td>
-              <td><input type="text" name="adresseIPNASource" placeholder="Adresse IP NAT Source" className="border p-2 w-full" /></td>
-              <td><input type="text" name="nomDNSDestination" placeholder="Nom DNS Destination" className="border p-2 w-full" /></td>
-              <td><input type="text" name="adresseIPDestination" placeholder="Adresse IP Destination" className="border p-2 w-full" /></td>
-              <td><input type="text" name="maskDestination" placeholder="Mask Destination" className="border p-2 w-full" /></td>
-              <td><input type="text" name="adresseIPNADestination" placeholder="Adresse IP NAT Destination" className="border p-2 w-full" /></td>
-              <td><input type="text" name="protocole" placeholder="Protocole" className="border p-2 w-full" /></td>
-              <td><input type="text" name="nomService" placeholder="Nom Service" className="border p-2 w-full" /></td>
-              <td><input type="text" name="portService" placeholder="N° Port" className="border p-2 w-full" /></td>
-              <td><input type="text" name="description" placeholder="Description" className="border p-2 w-full" /></td>
-              <td><input type="date" name="dateImplementation" className="border p-2 w-full" /></td>
-            </tr>
-          </tbody>
-        </table>
-        {/* Conteneur pour les boutons */}
+  <table className="add-row-table">
+    <tbody>
+    <tr>
+  {/* Liste déroulante pour État */}
+  <td>
+    <select name="etat" className="border p-2 w-full">
+      <option value="">(Sélectionner tout)</option>
+      <option value="AJOUT">AJOUT</option>
+      <option value="SUPPRESSION">SUPPRESSION</option>
+      <option value="MODIFICATION">MODIFICATION</option>
+      <option value="VIDES">(Vides)</option>
+    </select>
+  </td>
+
+  {/* Liste déroulante pour Nom DNS Source */}
+  <td>
+    <select name="nomDNSSource" className="border p-2 w-full">
+      <option value="">(Sélectionner tout)</option>
+      <option value="GRP-OCE_VPNSSL-MFA-Users">GRP-OCE_VPNSSL-MFA-Users</option>
+      <option value="ST YVES Oncologie">ST YVES Oncologie</option>
+      <option value="VLAN Bloc">VLAN Bloc</option>
+      <option value="VLAN Clinique">VLAN Clinique</option>
+      <option value="VIDES">(Vides)</option>
+    </select>
+  </td>
+
+  {/* Liste déroulante pour Adresse IP Source */}
+  <td>
+    <select name="adresseIPSource" className="border p-2 w-full">
+      <option value="">(Sélectionner tout)</option>
+      <option value="10.145.28.0">10.145.28.0</option>
+      <option value="10.145.29.0">10.145.29.0</option>
+      <option value="10.145.30.0">10.145.30.0</option>
+      <option value="VIDES">(Vides)</option>
+    </select>
+  </td>
+
+  {/* Champ texte pour Mask Source */}
+  <td>
+    <input type="text" name="maskSource" placeholder="Mask Source" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour Adresse IP NAT Source */}
+  <td>
+    <input type="text" name="adresseIPNASource" placeholder="Adresse IP NAT Source" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour Nom DNS Destination */}
+  <td>
+    <input type="text" name="nomDNSDestination" placeholder="Nom DNS Destination" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour Adresse IP Destination */}
+  <td>
+    <input type="text" name="adresseIPDestination" placeholder="Adresse IP Destination" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour Mask Destination */}
+  <td>
+    <input type="text" name="maskDestination" placeholder="Mask Destination" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour Adresse IP NAT Destination */}
+  <td>
+    <input type="text" name="adresseIPNADestination" placeholder="Adresse IP NAT Destination" className="border p-2 w-full" />
+  </td>
+
+  {/* Liste déroulante pour Protocole */}
+  <td>
+    <select name="protocole" className="border p-2 w-full">
+      <option value="">(Sélectionner tout)</option>
+      <option value="TCP">TCP</option>
+      <option value="UDP">UDP</option>
+      <option value="ICMP">ICMP</option>
+      <option value="VIDES">(Vides)</option>
+    </select>
+  </td>
+
+  {/* Champ texte pour Nom Service */}
+  <td>
+    <input type="text" name="nomService" placeholder="Nom Service" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour N° Port */}
+  <td>
+    <input type="text" name="portService" placeholder="N° Port" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour Description */}
+  <td>
+    <input type="text" name="description" placeholder="Description" className="border p-2 w-full" />
+  </td>
+
+  {/* Champ texte pour Date d'implémentation */}
+  <td>
+    <input
+      type="text"
+      name="dateImplementation"
+      placeholder="Saisir une date"
+      className="border p-2 w-full"
+    />
+  </td>
+</tr>
+
+    </tbody>
+  </table>
+
+  {/* Conteneur pour les boutons */}
   <div className="flex justify-between items-center mt-4">
     {/* Bouton Ajouter une ligne */}
     <Button variant="default" size="lg" type="submit" className="bg-blue-500">
@@ -526,6 +647,7 @@ try {
     </Button>
   </div>
 </form>
+
     </div>
   );
 }
