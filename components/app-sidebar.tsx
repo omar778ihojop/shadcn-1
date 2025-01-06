@@ -23,8 +23,8 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Historique des anciennes demandes",
-    url: "/historique",
+    title: "Demandes",
+    url: "/demandes",
     icon: Calendar,
   },
   {

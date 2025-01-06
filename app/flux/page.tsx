@@ -182,7 +182,7 @@ export default function FluxPage() {
               <th className="border border-gray-300 px-4 py-2">Nom de l’établissement</th>
               <th className="border border-gray-300 px-4 py-2">Nom du demandeur</th>
               <th className="border border-gray-300 px-4 py-2">Date de la dernière MAJ</th>
-              <th className="border border-gray-300 px-4 py-2">Objet de la demande</th>
+              <th className="border border-gray-300 px-4 py-2">Application</th>
             </tr>
           </thead>
           <tbody>
@@ -239,7 +239,7 @@ export default function FluxPage() {
               )
             );
           }}
-          placeholder="Saisissez l'objet de la demande"
+          placeholder="Saisissez le nom de l'application"
           className="border p-2 w-full"
         />
       </td>

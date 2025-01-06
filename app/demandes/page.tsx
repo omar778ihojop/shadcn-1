@@ -40,7 +40,7 @@ const columns: ColumnDef<FluxDetailItem>[] = [
   { accessorKey: "dateImplementation", header: "Date d'implémentation" },
 ];
 
-export default function HistoriquePage() {
+export default function demandesPage() {
   const [data, setData] = useState<FluxDetailItem[]>([]);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function HistoriquePage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Historique des anciennes demandes</h1>
+      <h1 className="text-2xl font-bold mb-4">Demandes</h1>
       <DataTable columns={columns} data={data} />
     </div>
   );
