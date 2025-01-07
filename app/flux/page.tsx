@@ -50,6 +50,10 @@ type FluxDetailItem = {
   portService: string;
   description: string;
   dateImplementation: string;
+  etablissement: string;
+  demandeur: string;
+  dateMaj: string;
+  application: string;
 };
 
 
@@ -119,7 +123,7 @@ const fluxDetailsColumns: ColumnDef<FluxDetailItem>[] = [
 
 export default function FluxPage() {
   const [fluxData, setFluxData] = useState<FluxDataItem[]>([]);
-  const [fluxDetails, setFluxDetails] = useState<FluxDetailItem[]>([]);
+  const [fluxDetails, setfluxDetails] = useState<FluxDetailItem[]>([]);
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
@@ -151,26 +155,34 @@ export default function FluxPage() {
   // Définition de la fonction handleFormSubmit
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     // Récupérer les données du formulaire
     const formData = new FormData(e.currentTarget);
     const newData: Partial<FluxDetailItem> = Object.fromEntries(formData) as Partial<FluxDetailItem>;
-
+  
     // Validation des champs obligatoires
     if (!newData.etat || !newData.nomDNSSource || !newData.adresseIPSource) {
       alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
-    // Ajouter les nouvelles données localement
-    setFluxDetails((prevDetails) => [
-      ...prevDetails,
-      { ...newData, numero: prevDetails.length + 1 } as FluxDetailItem,
-    ]);
+    // Inclure les colonnes supplémentaires dans chaque flux
+  const additionalData = fluxData[0]; // Utilisez la première ligne des données
+  const enrichedData = {
+    ...newData,
+    numero: fluxDetails.length + 1,
+    etablissement: additionalData.etablissement,
+    demandeur: additionalData.demandeur,
+    dateMaj: additionalData.dateMaj,
+    application: additionalData.objet,
+  } as FluxDetailItem;
 
-    alert("Nouvelle ligne ajoutée avec succès !");
-    e.currentTarget.reset();
-  };
+  // Ajouter les nouvelles données localement
+  setfluxDetails((prevDetails) => [...prevDetails, enrichedData]);
+
+  alert("Nouvelle ligne ajoutée avec succès !");
+  e.currentTarget.reset();
+};
 
   return (
     <div className="p-8">

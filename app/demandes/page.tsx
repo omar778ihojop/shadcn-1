@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
 
 type FluxDetailItem = {
   numero: number;
@@ -20,10 +21,17 @@ type FluxDetailItem = {
   portService: string;
   description: string;
   dateImplementation: string;
+  etablissement: string;
+  demandeur: string;
+  dateMaj: string;
+  application: string;
 };
 
-const columns: ColumnDef<FluxDetailItem>[] = [
-  { accessorKey: "numero", header: "N° Flux" },
+const columns = [
+  { accessorKey: "etablissement", header: "Nom de l’établissement" },
+  { accessorKey: "demandeur", header: "Nom du demandeur" },
+  { accessorKey: "dateMaj", header: "Date de la dernière MAJ" },
+  { accessorKey: "application", header: "Application" },
   { accessorKey: "etat", header: "État" },
   { accessorKey: "nomDNSSource", header: "Nom DNS Source" },
   { accessorKey: "adresseIPSource", header: "Adresse IP Source" },
@@ -40,29 +48,36 @@ const columns: ColumnDef<FluxDetailItem>[] = [
   { accessorKey: "dateImplementation", header: "Date d'implémentation" },
 ];
 
+
 export default function demandesPage() {
   const [data, setData] = useState<FluxDetailItem[]>([]);
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchDemandes() {
       try {
-        const response = await fetch("/flux/data");
-        const result = await response.json();
-        if (result.success) {
-          setData(result.fluxDetails);
-        } else {
-          console.error(result.message);
+        const response = await fetch("/api/save-demandes");
+        console.log("Status :", response.status);
+    
+        if (!response.ok) {
+          throw new Error(`Erreur lors de la récupération des demandes : ${response.statusText}`);
         }
+    
+        const demandes = await response.json(); // Ne pas utiliser response.text()
+        console.log("Demandes récupérées :", demandes);
+    
+        setData(demandes);
       } catch (error) {
-        console.error("Erreur lors de la récupération des données :", error);
+        console.error("Erreur dans fetchDemandes :", error);
       }
     }
-    fetchData();
+  
+    fetchDemandes();
   }, []);
+  
 
   return (
     <div className="p-8">
-      
+
       <DataTable columns={columns} data={data} />
     </div>
   );
