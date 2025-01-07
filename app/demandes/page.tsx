@@ -56,14 +56,14 @@ export default function demandesPage() {
     async function fetchDemandes() {
       try {
         const response = await fetch("/api/save-demandes");
-        console.log("Status :", response.status);
+        console.log("Statut de la réponse :", response.status);
     
         if (!response.ok) {
           throw new Error(`Erreur lors de la récupération des demandes : ${response.statusText}`);
         }
     
-        const demandes = await response.json(); // Ne pas utiliser response.text()
-        console.log("Demandes récupérées :", demandes);
+        const demandes = await response.json();
+        console.log("Demandes récupérées :", demandes); // Ajouté pour debug
     
         setData(demandes);
       } catch (error) {

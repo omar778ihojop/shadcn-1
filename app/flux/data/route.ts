@@ -70,6 +70,10 @@ export async function POST(request: NextRequest) {
         portService: body.portService,
         description: body.description,
         dateImplementation: body.dateImplementation,
+        etablissement: body.etablissement,
+        demandeur: body.demandeur,
+        dateMaj: body.dateMaj,
+        application: body.application,
       };
 
       // Insérer dans MongoDB
