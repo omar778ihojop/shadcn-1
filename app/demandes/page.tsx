@@ -62,7 +62,7 @@ export default function demandesPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Demandes</h1>
+      
       <DataTable columns={columns} data={data} />
     </div>
   );
