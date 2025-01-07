@@ -222,7 +222,7 @@ export default function FluxPage() {
               )
             );
           }}
-          placeholder="Saisissez un nom"
+          placeholder="Saisissez votre nom"
           className="border p-2 w-full"
         />
       </td>
