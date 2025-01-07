@@ -193,6 +193,12 @@ export default function FluxPage() {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
+    // Vérifiez que le formulaire existe
+    if (!e.currentTarget) {
+      console.error("Le formulaire n'existe pas.");
+      return;
+    }
+  
     // Récupérer les données du formulaire
     const formData = new FormData(e.currentTarget);
     const newData: Partial<FluxDetailItem> = Object.fromEntries(formData) as Partial<FluxDetailItem>;
@@ -229,7 +235,7 @@ export default function FluxPage() {
           demandeur: additionalData.demandeur,
           dateMaj: additionalData.dateMaj,
           application: additionalData.objet,
-          ...newData, // Inclure les champs saisis par l'utilisateur
+          ...newData,
         }),
       });
   
@@ -245,8 +251,11 @@ export default function FluxPage() {
     }
   
     // Réinitialiser le formulaire
-    e.currentTarget.reset();
+    if (e.currentTarget) {
+      e.currentTarget.reset();
+    }
   };
+  
   
 
   return (
