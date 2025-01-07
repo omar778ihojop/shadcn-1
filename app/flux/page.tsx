@@ -153,8 +153,44 @@ export default function FluxPage() {
     fetchUser();
   }, []);
 
+  const handleSaveDemandes = async () => {
+    try {
+      if (fluxData.length === 0) {
+        alert("Aucune donnée à sauvegarder !");
+        return;
+      }
+  
+      const currentData = fluxData[0]; // Prend les données de la première ligne
+  
+      // Validation des champs avant l'envoi
+      if (!currentData.etablissement || !currentData.demandeur || !currentData.dateMaj || !currentData.objet) {
+        alert("Veuillez remplir tous les champs obligatoires.");
+        return;
+      }
+  
+      const response = await fetch("/api/save-demandes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(currentData),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erreur lors de la sauvegarde des données.");
+      }
+  
+      alert("Les données ont été sauvegardées avec succès !");
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde des données :", error);
+      alert("Une erreur est survenue lors de la sauvegarde des données.");
+    }
+  };
+  
+
   // Définition de la fonction handleFormSubmit
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
     // Récupérer les données du formulaire
@@ -166,24 +202,52 @@ export default function FluxPage() {
       alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
-
+  
     // Inclure les colonnes supplémentaires dans chaque flux
-  const additionalData = fluxData[0]; // Utilisez la première ligne des données
-  const enrichedData = {
-    ...newData,
-    numero: fluxDetails.length + 1,
-    etablissement: additionalData.etablissement,
-    demandeur: additionalData.demandeur,
-    dateMaj: additionalData.dateMaj,
-    application: additionalData.objet,
-  } as FluxDetailItem;
-
-  // Ajouter les nouvelles données localement
-  setfluxDetails((prevDetails) => [...prevDetails, enrichedData]);
-
-  alert("Nouvelle ligne ajoutée avec succès !");
-  e.currentTarget.reset();
-};
+    const additionalData = fluxData[0]; // Utilisez la première ligne des données
+    const enrichedData = {
+      ...newData,
+      numero: fluxDetails.length + 1,
+      etablissement: additionalData.etablissement,
+      demandeur: additionalData.demandeur,
+      dateMaj: additionalData.dateMaj,
+      application: additionalData.objet,
+    } as FluxDetailItem;
+  
+    // Ajouter les nouvelles données localement
+    setfluxDetails((prevDetails) => [...prevDetails, enrichedData]);
+  
+    // Appeler l'API pour sauvegarder les données
+    try {
+      const response = await fetch("/api/save-demandes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          etablissement: additionalData.etablissement,
+          demandeur: additionalData.demandeur,
+          dateMaj: additionalData.dateMaj,
+          application: additionalData.objet,
+          ...newData, // Inclure les champs saisis par l'utilisateur
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erreur lors de la sauvegarde des données.");
+      }
+  
+      alert("Nouvelle ligne ajoutée et sauvegardée avec succès !");
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde :", error);
+      alert("Une erreur est survenue lors de l'enregistrement des données.");
+    }
+  
+    // Réinitialiser le formulaire
+    e.currentTarget.reset();
+  };
+  
 
   return (
     <div className="p-8">

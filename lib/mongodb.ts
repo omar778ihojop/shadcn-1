@@ -11,7 +11,9 @@ let client;
 let clientPromise: Promise<MongoClient>;
 
 if (!process.env.MONGODB_URI) {
-  throw new Error("Veuillez définir MONGODB_URI dans votre fichier .env.local");
+  throw new Error(
+    "La variable d'environnement MONGODB_URI est manquante. Ajoutez-la dans votre fichier .env.local."
+  );
 }
 
 if (process.env.NODE_ENV === "development") {
