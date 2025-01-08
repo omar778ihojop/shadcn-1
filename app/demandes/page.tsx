@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 type FluxDetailItem = {
   numero: number;
@@ -29,54 +30,88 @@ type FluxDetailItem = {
 
 export default function DemandesPage() {
   const [data, setData] = useState<FluxDetailItem[]>([]);
-  const [globalFilter, setGlobalFilter] = useState<string>("");
   const [filters, setFilters] = useState({
+    global: "",
     etablissement: "Tous",
-    demandeur: "",
-    application: "",
     etat: "Tous",
     protocole: "Tous",
     portService: "Tous",
+    demandeur: "",
+    application: "",
   });
 
   useEffect(() => {
     async function fetchDemandes() {
       try {
         const response = await fetch("/api/save-demandes");
-        console.log("Statut de la réponse :", response.status);
-
         if (!response.ok) {
-          throw new Error(
-            `Erreur lors de la récupération des demandes : ${response.statusText}`
-          );
+          throw new Error(`Erreur lors de la récupération des demandes : ${response.statusText}`);
         }
-
         const demandes = await response.json();
-        console.log("Demandes récupérées :", demandes);
-
+        console.log("Données récupérées :", demandes); // Vérification des données récupérées
         setData(demandes);
       } catch (error) {
         console.error("Erreur dans fetchDemandes :", error);
       }
     }
-
     fetchDemandes();
   }, []);
 
-  const columns = [
-    {
-      accessorKey: "etablissement",
-      header: () => (
-        <div className="flex flex-col">
-          <span>Nom de l’établissement</span>
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      global: "",
+      etablissement: "Tous",
+      etat: "Tous",
+      protocole: "Tous",
+      portService: "Tous",
+      demandeur: "",
+      application: "",
+    });
+  };
+
+  const filteredData = data.filter((item) => {
+    const matchesGlobalFilter =
+      !filters.global ||
+      Object.values(item)
+        .join(" ")
+        .toLowerCase()
+        .includes(filters.global.toLowerCase());
+
+    const matchesColumnFilters =
+      (filters.etablissement === "Tous" || item.etablissement === filters.etablissement) &&
+      (filters.etat === "Tous" || item.etat === filters.etat) &&
+      (filters.protocole === "Tous" || item.protocole === filters.protocole) &&
+      (filters.portService === "Tous" || item.portService === filters.portService) &&
+      (!filters.demandeur ||
+        item.demandeur?.toLowerCase().includes(filters.demandeur.toLowerCase())) &&
+      (!filters.application ||
+        item.application?.toLowerCase().includes(filters.application.toLowerCase()));
+
+    return matchesGlobalFilter && matchesColumnFilters;
+  });
+
+  return (
+    <div className="p-8">
+      {/* Formulaire de filtrage */}
+      <div className="mb-6 space-y-4">
+        <Input
+          placeholder="Recherche globale..."
+          value={filters.global}
+          onChange={(e) => handleFilterChange("global", e.target.value)}
+          className="w-full"
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Select
-            onValueChange={(value) =>
-              setFilters((prev) => ({ ...prev, etablissement: value }))
-            }
             value={filters.etablissement}
+            onValueChange={(value) => handleFilterChange("etablissement", value)}
           >
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue placeholder="Filtrer" />
+            <SelectTrigger>
+              <SelectValue placeholder="Etablissement" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Tous">Tous</SelectItem>
@@ -89,22 +124,13 @@ export default function DemandesPage() {
               ))}
             </SelectContent>
           </Select>
-        </div>
-      ),
-    },
-    {
-      accessorKey: "etat",
-      header: () => (
-        <div className="flex flex-col">
-          <span>État</span>
+
           <Select
-            onValueChange={(value) =>
-              setFilters((prev) => ({ ...prev, etat: value }))
-            }
             value={filters.etat}
+            onValueChange={(value) => handleFilterChange("etat", value)}
           >
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue placeholder="Filtrer" />
+            <SelectTrigger>
+              <SelectValue placeholder="État" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Tous">Tous</SelectItem>
@@ -117,22 +143,13 @@ export default function DemandesPage() {
               ))}
             </SelectContent>
           </Select>
-        </div>
-      ),
-    },
-    {
-      accessorKey: "protocole",
-      header: () => (
-        <div className="flex flex-col">
-          <span>Protocole</span>
+
           <Select
-            onValueChange={(value) =>
-              setFilters((prev) => ({ ...prev, protocole: value }))
-            }
             value={filters.protocole}
+            onValueChange={(value) => handleFilterChange("protocole", value)}
           >
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue placeholder="Filtrer" />
+            <SelectTrigger>
+              <SelectValue placeholder="Protocole" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Tous">Tous</SelectItem>
@@ -145,22 +162,13 @@ export default function DemandesPage() {
               ))}
             </SelectContent>
           </Select>
-        </div>
-      ),
-    },
-    {
-      accessorKey: "portService",
-      header: () => (
-        <div className="flex flex-col">
-          <span>N° Port</span>
+
           <Select
-            onValueChange={(value) =>
-              setFilters((prev) => ({ ...prev, portService: value }))
-            }
             value={filters.portService}
+            onValueChange={(value) => handleFilterChange("portService", value)}
           >
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue placeholder="Filtrer" />
+            <SelectTrigger>
+              <SelectValue placeholder="N° Port" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Tous">Tous</SelectItem>
@@ -173,63 +181,50 @@ export default function DemandesPage() {
               ))}
             </SelectContent>
           </Select>
+
+          <Input
+            placeholder="Demandeur"
+            value={filters.demandeur}
+            onChange={(e) => handleFilterChange("demandeur", e.target.value)}
+          />
+
+          <Input
+            placeholder="Application"
+            value={filters.application}
+            onChange={(e) => handleFilterChange("application", e.target.value)}
+          />
         </div>
-      ),
-    },
-    { accessorKey: "demandeur", header: "Nom du demandeur" },
-    { accessorKey: "dateMaj", header: "Date de la dernière MAJ" },
-    { accessorKey: "application", header: "Application" },
-    { accessorKey: "nomDNSSource", header: "Nom DNS Source" },
-    { accessorKey: "adresseIPSource", header: "Adresse IP Source" },
-    { accessorKey: "maskSource", header: "Mask Source" },
-    { accessorKey: "adresseIPNASource", header: "Adresse IP NAT Source" },
-    { accessorKey: "nomDNSDestination", header: "Nom DNS Destination" },
-    { accessorKey: "adresseIPDestination", header: "Adresse IP Destination" },
-    { accessorKey: "maskDestination", header: "Mask Destination" },
-    { accessorKey: "adresseIPNADestination", header: "Adresse IP NAT Destination" },
-    { accessorKey: "nomService", header: "Nom Service" },
-    { accessorKey: "description", header: "Description" },
-    { accessorKey: "dateImplementation", header: "Date d'implémentation" },
-  ];
 
-  const filteredData = data.filter((item) => {
-    const matchesGlobalFilter =
-      !globalFilter ||
-      Object.values(item)
-        .join(" ")
-        .toLowerCase()
-        .includes(globalFilter.toLowerCase());
-
-    const matchesColumnFilters =
-      (filters.etablissement === "Tous" ||
-        item.etablissement === filters.etablissement) &&
-      (filters.etat === "Tous" || item.etat === filters.etat) &&
-      (filters.protocole === "Tous" || item.protocole === filters.protocole) &&
-      (filters.portService === "Tous" || item.portService === filters.portService) &&
-      (!filters.demandeur ||
-        item.demandeur.toLowerCase().includes(filters.demandeur.toLowerCase())) &&
-      (!filters.application ||
-        item.application.toLowerCase().includes(filters.application.toLowerCase()));
-
-    return matchesGlobalFilter && matchesColumnFilters;
-  });
-
-  return (
-    <div className="p-8">
-      <div className="mb-4">
-        <Input
-          placeholder="Rechercher dans les demandes..."
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-full"
-        />
+        <Button onClick={handleResetFilters} className="mt-4">
+          Réinitialiser les filtres
+        </Button>
       </div>
 
-      <DataTable columns={columns} data={filteredData} />
+      {/* Tableau */}
+      <DataTable
+        columns={[
+          { accessorKey: "numero", header: "Numéro" },
+          { accessorKey: "etablissement", header: "Établissement" },
+          { accessorKey: "etat", header: "État" },
+          { accessorKey: "protocole", header: "Protocole" },
+          { accessorKey: "portService", header: "Port Service" },
+          { accessorKey: "demandeur", header: "Demandeur" },
+          { accessorKey: "application", header: "Application" },
+          { accessorKey: "dateMaj", header: "Dernière MAJ" },
+          { accessorKey: "nomDNSSource", header: "Nom DNS Source" },
+          { accessorKey: "adresseIPSource", header: "Adresse IP Source" },
+          { accessorKey: "maskSource", header: "Mask Source" },
+          { accessorKey: "adresseIPNASource", header: "Adresse IP NAT Source" },
+          { accessorKey: "nomDNSDestination", header: "Nom DNS Destination" },
+          { accessorKey: "adresseIPDestination", header: "Adresse IP Destination" },
+          { accessorKey: "maskDestination", header: "Mask Destination" },
+          { accessorKey: "adresseIPNADestination", header: "Adresse IP NAT Destination" },
+          { accessorKey: "nomService", header: "Nom Service" },
+          { accessorKey: "description", header: "Description" },
+          { accessorKey: "dateImplementation", header: "Date d'implémentation" },
+        ]}
+        data={filteredData}
+      />
     </div>
   );
 }
-
-
-
-
