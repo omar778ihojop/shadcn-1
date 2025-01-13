@@ -228,3 +228,13 @@ export default function DemandesPage() {
     </div>
   );
 }
+
+
+git clone https://github.com/briancodex/shadcn-1.git
+cd shadcn-1
+
+git remote add private https://github.com/GITHUBELSAN/Open-flux.git
+
+
+git push Open-flux --all
+git push Open-flux --tags
